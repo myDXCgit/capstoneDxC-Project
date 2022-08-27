@@ -9,7 +9,7 @@
 						"referenceName": "Json2",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "sourceIOTSIlverBlob"
 				}
 			],
 			"sinks": [
@@ -18,7 +18,7 @@
 						"referenceName": "Json3",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "sinkIOTGoldBlob"
 				}
 			],
 			"transformations": [
@@ -43,14 +43,14 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'documentPerLine') ~> source1",
+				"     documentForm: 'documentPerLine') ~> sourceIOTSIlverBlob",
 				"derivedColumn1 filter(temperature > 31.9) ~> filter1",
-				"source1 derive(temperature = round(temperature, 2,2 ),",
+				"sourceIOTSIlverBlob derive(temperature = round(temperature, 2,2 ),",
 				"          humidity = round(humidity, 2, 2)) ~> derivedColumn1",
 				"filter1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true) ~> sinkIOTGoldBlob"
 			]
 		}
 	}

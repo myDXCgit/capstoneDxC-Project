@@ -40,7 +40,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "CosmosDbSqlApi",
+						"referenceName": "CosmosDbSqlApiCollection1",
 						"type": "DatasetReference"
 					}
 				]

@@ -1,5 +1,5 @@
 {
-	"name": "pipelineAPIblobToGoldJson",
+	"name": "pipeline_API_blobToGold_CosmosDB_Json",
 	"properties": {
 		"activities": [
 			{

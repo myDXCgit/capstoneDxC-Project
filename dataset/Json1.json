@@ -1,0 +1,26 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStoragesilver",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "part-00000-5b7e212c-8dc5-453a-94a9-3bfce9890d3a-c000.json",
+				"container": "silverlayer"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"MRData": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

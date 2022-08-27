@@ -6,14 +6,14 @@
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "PipeLineForIOTNotification",
+					"referenceName": "PipeLineForIOTSilverToGold",
 					"type": "PipelineReference"
 				}
 			}
 		],
 		"type": "BlobEventsTrigger",
 		"typeProperties": {
-			"blobPathBeginsWith": "/goldlayer/blobs/",
+			"blobPathBeginsWith": "/silverlayer/blobs/",
 			"ignoreEmptyBlobs": true,
 			"scope": "/subscriptions/2e8b1589-209a-4f7d-aca4-39a824d1c189/resourceGroups/Dev/providers/Microsoft.Storage/storageAccounts/capstonedxcproject",
 			"events": [

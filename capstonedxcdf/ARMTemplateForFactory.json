@@ -559,7 +559,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "respApi_toBlob_bronze",
+								"referenceName": "JsonRaceDataToSilver",
 								"type": "DatasetReference"
 							},
 							"name": "sourcebronzesilverjson"
@@ -574,9 +574,19 @@
 							"name": "sinktocosmosdb"
 						}
 					],
-					"transformations": [],
+					"transformations": [
+						{
+							"name": "RemovingNullData"
+						},
+						{
+							"name": "addingNewcolumn"
+						}
+					],
 					"scriptLines": [
-						"source(allowSchemaDrift: true,",
+						"source(output(",
+						"          MRData as (xmlns as string, series as string, url as string, limit as string, offset as string, total as string, RaceTable as (season as string, round as string, Races as (season as string, round as string, url as string, raceName as string, Circuit as (circuitId as string, url as string, circuitName as string, Location as (lat as string, long as string, locality as string, country as string)), date as string, Results as (number as string, position as string, positionText as string, points as string, Driver as (driverId as string, code as string, url as string, givenName as string, familyName as string, dateOfBirth as string, nationality as string), Constructor as (constructorId as string, url as string, name as string, nationality as string), grid as string, laps as string, status as string, Time as (millis as string, time as string), FastestLap as (rank as string, lap as string, Time as (time as string), AverageSpeed as (units as string, speed as string)))[])[]))",
+						"     ),",
+						"     allowSchemaDrift: true,",
 						"     validateSchema: true,",
 						"     limit: 100,",
 						"     ignoreNoFilesFound: false,",
@@ -586,7 +596,9 @@
 						"     preferredIntegralType: 'integer',",
 						"     preferredFractionalType: 'double',",
 						"     booleanFormat: ['1', '0']) ~> sourcebronzesilverjson",
-						"sourcebronzesilverjson sink(allowSchemaDrift: true,",
+						"sourcebronzesilverjson filter(!isNull(MRData.limit)) ~> RemovingNullData",
+						"RemovingNullData derive(MRData = concat(MRData.xmlns,MRData.series)) ~> addingNewcolumn",
+						"addingNewcolumn sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> sinktocosmosdb"
@@ -594,8 +606,237 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/respApi_toBlob_bronze')]",
+				"[concat(variables('factoryId'), '/datasets/JsonRaceDataToSilver')]",
 				"[concat(variables('factoryId'), '/datasets/Json_silver')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/JsonRaceDataToSilver')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStoragesilver",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "RaceData.json",
+						"container": "bronzelayer"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"MRData": {
+							"type": "object",
+							"properties": {
+								"xmlns": {
+									"type": "string"
+								},
+								"series": {
+									"type": "string"
+								},
+								"url": {
+									"type": "string"
+								},
+								"limit": {
+									"type": "string"
+								},
+								"offset": {
+									"type": "string"
+								},
+								"total": {
+									"type": "string"
+								},
+								"RaceTable": {
+									"type": "object",
+									"properties": {
+										"season": {
+											"type": "string"
+										},
+										"round": {
+											"type": "string"
+										},
+										"Races": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"season": {
+														"type": "string"
+													},
+													"round": {
+														"type": "string"
+													},
+													"url": {
+														"type": "string"
+													},
+													"raceName": {
+														"type": "string"
+													},
+													"Circuit": {
+														"type": "object",
+														"properties": {
+															"circuitId": {
+																"type": "string"
+															},
+															"url": {
+																"type": "string"
+															},
+															"circuitName": {
+																"type": "string"
+															},
+															"Location": {
+																"type": "object",
+																"properties": {
+																	"lat": {
+																		"type": "string"
+																	},
+																	"long": {
+																		"type": "string"
+																	},
+																	"locality": {
+																		"type": "string"
+																	},
+																	"country": {
+																		"type": "string"
+																	}
+																}
+															}
+														}
+													},
+													"date": {
+														"type": "string"
+													},
+													"Results": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"number": {
+																	"type": "string"
+																},
+																"position": {
+																	"type": "string"
+																},
+																"positionText": {
+																	"type": "string"
+																},
+																"points": {
+																	"type": "string"
+																},
+																"Driver": {
+																	"type": "object",
+																	"properties": {
+																		"driverId": {
+																			"type": "string"
+																		},
+																		"code": {
+																			"type": "string"
+																		},
+																		"url": {
+																			"type": "string"
+																		},
+																		"givenName": {
+																			"type": "string"
+																		},
+																		"familyName": {
+																			"type": "string"
+																		},
+																		"dateOfBirth": {
+																			"type": "string"
+																		},
+																		"nationality": {
+																			"type": "string"
+																		}
+																	}
+																},
+																"Constructor": {
+																	"type": "object",
+																	"properties": {
+																		"constructorId": {
+																			"type": "string"
+																		},
+																		"url": {
+																			"type": "string"
+																		},
+																		"name": {
+																			"type": "string"
+																		},
+																		"nationality": {
+																			"type": "string"
+																		}
+																	}
+																},
+																"grid": {
+																	"type": "string"
+																},
+																"laps": {
+																	"type": "string"
+																},
+																"status": {
+																	"type": "string"
+																},
+																"Time": {
+																	"type": "object",
+																	"properties": {
+																		"millis": {
+																			"type": "string"
+																		},
+																		"time": {
+																			"type": "string"
+																		}
+																	}
+																},
+																"FastestLap": {
+																	"type": "object",
+																	"properties": {
+																		"rank": {
+																			"type": "string"
+																		},
+																		"lap": {
+																			"type": "string"
+																		},
+																		"Time": {
+																			"type": "object",
+																			"properties": {
+																				"time": {
+																					"type": "string"
+																				}
+																			}
+																		},
+																		"AverageSpeed": {
+																			"type": "object",
+																			"properties": {
+																				"units": {
+																					"type": "string"
+																				},
+																				"speed": {
+																					"type": "string"
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStoragesilver')]"
 			]
 		}
 	]

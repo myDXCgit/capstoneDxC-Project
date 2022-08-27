@@ -71,10 +71,6 @@
 				"precision": 23,
 				"scale": 3
 			}
-		],
-		"typeProperties": {
-			"schema": "SalesLT",
-			"table": "Customer"
-		}
+		]
 	}
 }

@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ingest data from http to blob",
+				"name": "ingest data from http to blob Bronze Layer",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -25,11 +25,143 @@
 							"type": "DelimitedTextReadSettings"
 						}
 					},
-					"enableStaging": false
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": "employee.csv"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "EMPLOYEE_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "EMPLOYEE_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "FIRST_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "FIRST_NAME",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "LAST_NAME",
+									"type": "String"
+								},
+								"sink": {
+									"name": "LAST_NAME",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EMAIL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "EMAIL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PHONE_NUMBER",
+									"type": "String"
+								},
+								"sink": {
+									"name": "PHONE_NUMBER",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "HIRE_DATE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "HIRE_DATE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "JOB_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "JOB_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SALARY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "SALARY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "COMMISSION_PCT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "COMMISSION_PCT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MANAGER_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MANAGER_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DEPARTMENT_ID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DEPARTMENT_ID",
+									"type": "String"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "csvfromhttp",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "csvtoblob",
 						"type": "DatasetReference"
 					}
 				]

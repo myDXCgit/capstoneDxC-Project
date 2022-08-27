@@ -1,0 +1,6 @@
+{
+	"name": "RestApi_pipeline_toBlob_Bronze",
+	"properties": {
+		"annotations": []
+	}
+}

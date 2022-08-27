@@ -256,13 +256,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/PipeLineForIOTNotification')]",
+			"name": "[concat(parameters('factoryName'), '/PipeLineForIOTSilverToGold')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Data flow1",
+						"name": "IOT Stream Silver To Gold with Storage Event Trigger",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -1125,7 +1125,7 @@
 				"pipelines": [
 					{
 						"pipelineReference": {
-							"referenceName": "PipeLineForIOTNotification",
+							"referenceName": "PipeLineForIOTSilverToGold",
 							"type": "PipelineReference"
 						},
 						"parameters": {}
@@ -1133,7 +1133,7 @@
 				],
 				"type": "BlobEventsTrigger",
 				"typeProperties": {
-					"blobPathBeginsWith": "/goldlayer/blobs/",
+					"blobPathBeginsWith": "/silverlayer/blobs/",
 					"ignoreEmptyBlobs": true,
 					"scope": "[parameters('triggerWhenTempIsAbove32Degree_properties_typeProperties_scope')]",
 					"events": [
@@ -1142,7 +1142,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/pipelines/PipeLineForIOTNotification')]"
+				"[concat(variables('factoryId'), '/pipelines/PipeLineForIOTSilverToGold')]"
 			]
 		},
 		{

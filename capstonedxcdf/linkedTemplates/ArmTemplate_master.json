@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "capstonedxcdf"
 		},
+		"AzureBlobStoragesilver_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStoragesilver'"
+		},
 		"HttpServerLinkedService_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'HttpServerLinkedService'"
@@ -61,6 +65,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"AzureBlobStoragesilver_connectionString": {
+						"value": "[parameters('AzureBlobStoragesilver_connectionString')]"
 					},
 					"HttpServerLinkedService_password": {
 						"value": "[parameters('HttpServerLinkedService_password')]"

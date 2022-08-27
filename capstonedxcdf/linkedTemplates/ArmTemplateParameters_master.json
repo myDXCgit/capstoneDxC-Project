@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "capstonedxcdf"
 		},
+		"AzureBlobStoragesilver_connectionString": {
+			"value": ""
+		},
 		"HttpServerLinkedService_password": {
 			"value": ""
 		},

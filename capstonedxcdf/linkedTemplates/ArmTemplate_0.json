@@ -674,202 +674,29 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Httpurl_pipeline_toBlob_Bronze')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "ingest data from http to blob Bronze Layer",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "HttpReadSettings",
-									"requestMethod": "GET"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": "employee.csv"
-								}
-							},
-							"enableStaging": false,
-							"logSettings": {
-								"enableCopyActivityLog": true,
-								"copyActivityLogSettings": {
-									"logLevel": "Info",
-									"enableReliableLogging": false
-								},
-								"logLocationSettings": {
-									"linkedServiceName": {
-										"referenceName": "httpToBlobCsv",
-										"type": "LinkedServiceReference"
-									},
-									"path": "bronzelog"
-								}
-							},
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "EMPLOYEE_ID",
-											"type": "String"
-										},
-										"sink": {
-											"name": "EMPLOYEE_ID",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "FIRST_NAME",
-											"type": "String"
-										},
-										"sink": {
-											"name": "FIRST_NAME",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "LAST_NAME",
-											"type": "String"
-										},
-										"sink": {
-											"name": "LAST_NAME",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "EMAIL",
-											"type": "String"
-										},
-										"sink": {
-											"name": "EMAIL",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "PHONE_NUMBER",
-											"type": "String"
-										},
-										"sink": {
-											"name": "PHONE_NUMBER",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "HIRE_DATE",
-											"type": "String"
-										},
-										"sink": {
-											"name": "HIRE_DATE",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "JOB_ID",
-											"type": "String"
-										},
-										"sink": {
-											"name": "JOB_ID",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "SALARY",
-											"type": "String"
-										},
-										"sink": {
-											"name": "SALARY",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "COMMISSION_PCT",
-											"type": "String"
-										},
-										"sink": {
-											"name": "COMMISSION_PCT",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "MANAGER_ID",
-											"type": "String"
-										},
-										"sink": {
-											"name": "MANAGER_ID",
-											"type": "String"
-										}
-									},
-									{
-										"source": {
-											"name": "DEPARTMENT_ID",
-											"type": "String"
-										},
-										"sink": {
-											"name": "DEPARTMENT_ID",
-											"type": "String"
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "csvfromhttp",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "csvtoblob",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStoragesilver",
+					"type": "LinkedServiceReference"
 				},
-				"annotations": []
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "silverlayer"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/csvfromhttp')]",
-				"[concat(variables('factoryId'), '/datasets/csvtoblob')]",
-				"[concat(variables('factoryId'), '/linkedServices/httpToBlobCsv')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStoragesilver')]"
 			]
 		}
 	]

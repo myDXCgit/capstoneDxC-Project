@@ -11,6 +11,12 @@
 		"AzureBlobStoragesilver_connectionString": {
 			"value": ""
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabase2_connectionString": {
+			"value": ""
+		},
 		"HttpServerLinkedService_password": {
 			"value": ""
 		},
@@ -24,12 +30,6 @@
 			"value": ""
 		},
 		"restApi_to_AzureBlobStorage_json_connectionString": {
-			"value": ""
-		},
-		"AzureSqlDatabase1_connectionString": {
-			"value": ""
-		},
-		"AzureSqlDatabase2_connectionString": {
 			"value": ""
 		},
 		"HttpServerLinkedService_properties_typeProperties_url": {

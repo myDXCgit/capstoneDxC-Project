@@ -15,6 +15,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStoragesilver'"
 		},
+		"AzureSqlDatabase1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
+		},
+		"AzureSqlDatabase2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
+		},
 		"HttpServerLinkedService_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'HttpServerLinkedService'"
@@ -34,14 +42,6 @@
 		"restApi_to_AzureBlobStorage_json_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'restApi_to_AzureBlobStorage_json'"
-		},
-		"AzureSqlDatabase1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
-		},
-		"AzureSqlDatabase2_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase2'"
 		},
 		"HttpServerLinkedService_properties_typeProperties_url": {
 			"type": "string",
@@ -92,6 +92,12 @@
 					"AzureBlobStoragesilver_connectionString": {
 						"value": "[parameters('AzureBlobStoragesilver_connectionString')]"
 					},
+					"AzureSqlDatabase1_connectionString": {
+						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
+					},
+					"AzureSqlDatabase2_connectionString": {
+						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
+					},
 					"HttpServerLinkedService_password": {
 						"value": "[parameters('HttpServerLinkedService_password')]"
 					},
@@ -106,12 +112,6 @@
 					},
 					"restApi_to_AzureBlobStorage_json_connectionString": {
 						"value": "[parameters('restApi_to_AzureBlobStorage_json_connectionString')]"
-					},
-					"AzureSqlDatabase1_connectionString": {
-						"value": "[parameters('AzureSqlDatabase1_connectionString')]"
-					},
-					"AzureSqlDatabase2_connectionString": {
-						"value": "[parameters('AzureSqlDatabase2_connectionString')]"
 					},
 					"HttpServerLinkedService_properties_typeProperties_url": {
 						"value": "[parameters('HttpServerLinkedService_properties_typeProperties_url')]"

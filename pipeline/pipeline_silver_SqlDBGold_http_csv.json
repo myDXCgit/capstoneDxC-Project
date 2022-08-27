@@ -1,0 +1,6 @@
+{
+	"name": "pipeline_silver_SqlDBGold_http_csv",
+	"properties": {
+		"annotations": []
+	}
+}

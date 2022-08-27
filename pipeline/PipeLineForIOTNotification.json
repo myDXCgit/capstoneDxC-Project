@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "IOT Stream Silver To Gold with Storage Event Trigger",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {

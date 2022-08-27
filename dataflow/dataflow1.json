@@ -1,0 +1,43 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "respApi_toBlob_bronze",
+						"type": "DatasetReference"
+					},
+					"name": "sourcebronzesilverjson"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Json_silver",
+						"type": "DatasetReference"
+					},
+					"name": "sinktocosmosdb"
+				}
+			],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: true,",
+				"     limit: 100,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments',",
+				"     dateFormats: ['yyyy/MM/dd'],",
+				"     timestampFormats: ['yyyy.MM.dd HH:mm:ss'],",
+				"     preferredIntegralType: 'integer',",
+				"     preferredFractionalType: 'double',",
+				"     booleanFormat: ['1', '0']) ~> sourcebronzesilverjson",
+				"sourcebronzesilverjson sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinktocosmosdb"
+			]
+		}
+	}
+}

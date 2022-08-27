@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "capstonedxcdf"
 		},
+		"AzureBlobStorageToGold_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageToGold'"
+		},
 		"AzureBlobStoragesilver_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStoragesilver'"
@@ -14,6 +18,10 @@
 		"HttpServerLinkedService_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'HttpServerLinkedService'"
+		},
+		"SilverToCosmosDb2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SilverToCosmosDb2'"
 		},
 		"httpToBlobCsv_connectionString": {
 			"type": "secureString",
@@ -27,10 +35,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'restApi_to_AzureBlobStorage_json'"
 		},
-		"SilverToCosmosDb2_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SilverToCosmosDb2'"
-		},
 		"HttpServerLinkedService_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://gist.githubusercontent.com/kevin336/acbb2271e66c10a5b73aacf82ca82784/raw/e38afe62e088394d61ed30884dd50a6826eee0a8/employees.csv"
@@ -42,6 +46,10 @@
 		"RestAPI_LinkedService_toBlob_Bronze_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "http://ergast.com/api/f1/2004/1/results.json"
+		},
+		"triggerWhenTempIsAbove32Degree_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/2e8b1589-209a-4f7d-aca4-39a824d1c189/resourceGroups/Dev/providers/Microsoft.Storage/storageAccounts/capstonedxcproject"
 		},
 		"containerUri": {
 			"type": "string",
@@ -70,11 +78,17 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"AzureBlobStorageToGold_connectionString": {
+						"value": "[parameters('AzureBlobStorageToGold_connectionString')]"
+					},
 					"AzureBlobStoragesilver_connectionString": {
 						"value": "[parameters('AzureBlobStoragesilver_connectionString')]"
 					},
 					"HttpServerLinkedService_password": {
 						"value": "[parameters('HttpServerLinkedService_password')]"
+					},
+					"SilverToCosmosDb2_connectionString": {
+						"value": "[parameters('SilverToCosmosDb2_connectionString')]"
 					},
 					"httpToBlobCsv_connectionString": {
 						"value": "[parameters('httpToBlobCsv_connectionString')]"
@@ -84,9 +98,6 @@
 					},
 					"restApi_to_AzureBlobStorage_json_connectionString": {
 						"value": "[parameters('restApi_to_AzureBlobStorage_json_connectionString')]"
-					},
-					"SilverToCosmosDb2_connectionString": {
-						"value": "[parameters('SilverToCosmosDb2_connectionString')]"
 					},
 					"HttpServerLinkedService_properties_typeProperties_url": {
 						"value": "[parameters('HttpServerLinkedService_properties_typeProperties_url')]"
@@ -114,6 +125,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"triggerWhenTempIsAbove32Degree_properties_typeProperties_scope": {
+						"value": "[parameters('triggerWhenTempIsAbove32Degree_properties_typeProperties_scope')]"
 					}
 				}
 			},

@@ -6,6 +6,10 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "capstonedxcdf"
+		},
+		"triggerWhenTempIsAbove32Degree_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/2e8b1589-209a-4f7d-aca4-39a824d1c189/resourceGroups/Dev/providers/Microsoft.Storage/storageAccounts/capstonedxcproject"
 		}
 	},
 	"variables": {
@@ -13,13 +17,91 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/pipelineToCosmosDb2')]",
+			"name": "[concat(parameters('factoryName'), '/RestApi_pipeline_toBlob_Bronze')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Copy data1",
+						"name": "ingest data from Rest API to blob Bronze Layer",
+						"description": "",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "RestSource",
+								"httpRequestTimeout": "00:01:40",
+								"requestInterval": "00.00:00:00.010",
+								"requestMethod": "GET",
+								"paginationRules": {
+									"supportRFC5988": "true"
+								}
+							},
+							"sink": {
+								"type": "JsonSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "JsonWriteSettings"
+								}
+							},
+							"enableStaging": false,
+							"logSettings": {
+								"enableCopyActivityLog": true,
+								"copyActivityLogSettings": {
+									"logLevel": "Info",
+									"enableReliableLogging": false
+								},
+								"logLocationSettings": {
+									"linkedServiceName": {
+										"referenceName": "restApi_to_AzureBlobStorage_json",
+										"type": "LinkedServiceReference"
+									},
+									"path": "bronzelog"
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "RestIngestdatatoBlob",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "respApi_toBlob_bronze",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline_API_blobToGold_CosmosDB_Json')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "API_blobToGold_CosmosDB_Json",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -50,14 +132,14 @@
 						},
 						"inputs": [
 							{
-								"referenceName": "Json1",
+								"referenceName": "JsonRaceDataToSilver",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "CosmosDbSqlApiCollection1",
+								"referenceName": "CosmosDbSqlApi",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -71,6 +153,171 @@
 				"annotations": []
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "JsonRaceDataToSilver",
+								"type": "DatasetReference"
+							},
+							"name": "sourcebronzesilverjson"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Json_silver",
+								"type": "DatasetReference"
+							},
+							"name": "sinktocosmosdb"
+						}
+					],
+					"transformations": [
+						{
+							"name": "RemovingNullData"
+						},
+						{
+							"name": "addingNewcolumn"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          MRData as (xmlns as string, series as string, url as string, limit as string, offset as string, total as string, RaceTable as (season as string, round as string, Races as (season as string, round as string, url as string, raceName as string, Circuit as (circuitId as string, url as string, circuitName as string, Location as (lat as string, long as string, locality as string, country as string)), date as string, Results as (number as string, position as string, positionText as string, points as string, Driver as (driverId as string, code as string, url as string, givenName as string, familyName as string, dateOfBirth as string, nationality as string), Constructor as (constructorId as string, url as string, name as string, nationality as string), grid as string, laps as string, status as string, Time as (millis as string, time as string), FastestLap as (rank as string, lap as string, Time as (time as string), AverageSpeed as (units as string, speed as string)))[])[]))",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: true,",
+						"     limit: 100,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'arrayOfDocuments',",
+						"     dateFormats: ['yyyy/MM/dd'],",
+						"     timestampFormats: ['yyyy.MM.dd HH:mm:ss'],",
+						"     preferredIntegralType: 'integer',",
+						"     preferredFractionalType: 'double',",
+						"     booleanFormat: ['1', '0']) ~> sourcebronzesilverjson",
+						"sourcebronzesilverjson filter(!isNull(MRData.limit)) ~> RemovingNullData",
+						"RemovingNullData derive(MRData = concat(MRData.xmlns,MRData.series)) ~> addingNewcolumn",
+						"addingNewcolumn sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinktocosmosdb"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflowIOTStreamSilverToGold')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Json2",
+								"type": "DatasetReference"
+							},
+							"name": "sourceIOTSIlverBlob"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "Json3",
+								"type": "DatasetReference"
+							},
+							"name": "sinkIOTGoldBlob"
+						}
+					],
+					"transformations": [
+						{
+							"name": "filter1"
+						},
+						{
+							"name": "derivedColumn1"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          messageId as integer,",
+						"          deviceId as string,",
+						"          temperature as double,",
+						"          humidity as double,",
+						"          EventProcessedUtcTime as string,",
+						"          PartitionId as integer,",
+						"          EventEnqueuedUtcTime as string,",
+						"          IoTHub as (MessageId as string, CorrelationId as string, ConnectionDeviceId as string, ConnectionDeviceGenerationId as string, EnqueuedTime as string)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> sourceIOTSIlverBlob",
+						"derivedColumn1 filter(temperature > 31.9) ~> filter1",
+						"sourceIOTSIlverBlob derive(temperature = round(temperature, 2,2 ),",
+						"          humidity = round(humidity, 2, 2)) ~> derivedColumn1",
+						"filter1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkIOTGoldBlob"
+					]
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PipeLineForIOTNotification')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflowIOTStreamSilverToGold",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"sourceIOTSIlverBlob": {},
+									"sinkIOTGoldBlob": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflowIOTStreamSilverToGold')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/pipelineRestApiToCosmos')]",
@@ -115,7 +362,39 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/triggerWhenTempIsAbove32Degree')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "PipeLineForIOTNotification",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/goldlayer/blobs/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('triggerWhenTempIsAbove32Degree_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/PipeLineForIOTNotification')]"
+			]
 		}
 	]
 }

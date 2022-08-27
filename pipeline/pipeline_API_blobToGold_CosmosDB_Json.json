@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "APIblobToGoldJson",
+				"name": "API_blobToGold_CosmosDB_Json",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {

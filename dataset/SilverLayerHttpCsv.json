@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText1",
+	"name": "SilverLayerHttpCsv",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStoragesilver",

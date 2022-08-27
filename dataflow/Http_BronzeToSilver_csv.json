@@ -15,7 +15,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DelimitedText1",
+						"referenceName": "SilverLayerHttpCsv",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"

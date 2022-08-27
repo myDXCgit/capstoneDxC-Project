@@ -1,0 +1,17 @@
+{
+	"name": "respApi_toBlob_bronze",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "restApi_to_AzureBlobStorage_json",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation"
+			}
+		},
+		"schema": {}
+	}
+}

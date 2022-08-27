@@ -1,0 +1,12 @@
+{
+	"name": "RestIngestdatatoBlob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RestAPI_LinkedService_toBlob_Bronze",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}

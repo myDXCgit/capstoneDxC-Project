@@ -1,0 +1,12 @@
+{
+	"name": "CosmosDbSqlApi",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "json_fromblob_tocosmosdb_linkedservice",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CosmosDbSqlApiCollection",
+		"schema": {}
+	}
+}
